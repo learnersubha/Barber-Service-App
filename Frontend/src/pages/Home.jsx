@@ -7,13 +7,23 @@ import axios from "axios";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null)
   const [barbars, setBarbars] = useState([]);
   const [search, setSearch] = useState("");
+
+  useEffect(()=>{
+    const fetchUser = async()=>{
+      const res = await axios.get("http://localhost:3000/api/auth/user/me",{withCredentials: true})
+      setUser(res.data.user)
+      
+    }
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchBarbar = async () => {
       const response = await axios.get("http://localhost:3000/api/barbar");
-      setBarbars(response.data);
+      setBarbars(response.data);      
     };
 
     fetchBarbar();
@@ -29,7 +39,7 @@ const Home = () => {
       <div className="flex items-center justify-center pt-12 bg-gray-800 text-white">
         <div className="bg-gray-800 h-[90%] w-[85%]  rounded flex flex-col items-start  pb-8 shadow-2xl shadow-amber-50 ">
           <div className=" mt-10 flex flex-col items-center w-full ">
-            <h1 className="text-3xl font-medium">Welcome, Customer!</h1>
+            <h1 className="text-3xl font-medium">👋 Welcome {user?.name}</h1>
             <h4 className="text-lg">Book your appointments</h4>
           </div>
           <div className="mt-5 ml-120 w-full ">

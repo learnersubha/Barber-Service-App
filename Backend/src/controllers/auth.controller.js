@@ -1,7 +1,9 @@
 const userModel = require ('../models/user.model')
 const barbarModel = require ('../models/barbar.model')
+
 const bcrypt = require('bcryptjs')
 const jwt = require ('jsonwebtoken')
+const { json } = require('express')
 
 async function registerUser(req, res){
   const{name,email,password} = req.body
@@ -76,6 +78,18 @@ async function loginUser(req, res){
 
 }
 
+async function findUser(req, res) {
+  try {
+    const user = await userModel.findById(req.user.id)
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ user });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
 function logoutUser(req, res){
   res.clearCookie("token");
   res.status(200).json({
@@ -148,7 +162,8 @@ async function loginBarbar(req, res) {
     id: barbar._id
   }, process.env.JWT_SECRET)
   res.cookie("token", token)
-  res.status(201).json({
+
+  res.status(200).json({
     message: "Barbar login successfully",
     barbar: {
       _id: barbar._id,
@@ -158,6 +173,17 @@ async function loginBarbar(req, res) {
   }) 
 }
 
+async function findBarbar(req, res){
+  try{
+    const barbar = await barbarModel.findById(req.barbar.id)
+    if(!barbar){
+      return res.status(400).json({message: "Undefined"})
+    }
+    return res.status(200).json({barbar})
+  }catch(err){
+     return res.status(500).json({ message: "Server error" });
+  }
+}
 function logoutBarbar(req, res){
    res.clearCookie("token");
    res.status(200).json({
@@ -168,4 +194,4 @@ function logoutBarbar(req, res){
 
 
 
-module.exports = { registerUser, loginUser, logoutUser, registerBarbar, loginBarbar, logoutBarbar}
+module.exports = { registerUser, loginUser, findUser, logoutUser, registerBarbar, loginBarbar,findBarbar, logoutBarbar}

@@ -1,20 +1,31 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const BarbarDashboard = () => {
+
+  const [barbar, setBarbar] = useState()
+
+  useEffect(()=>{
+    const fetchBarbar = async()=>{
+      const res = await axios.get("http://localhost:3000/api/auth/barbar/me",{withCredentials: true})
+      setBarbar(res.data.barbar)
+    }
+    fetchBarbar();
+  },[])
   return (
     <div className="bg-gray-800 text-white h-screen w-full overflow-auto flex justify-center">
       <div className=" bg-gray-700 mx-20 my-15 rounded h-[80%] w-[60%]">
         <div className="mt-5 flex flex-col justify-center items-center">
-          <h1 className="text-3xl font-semibold">👋 Welcome Barbar</h1>
+          <h1 className="text-3xl font-semibold">👋 Welcome {barbar?.name}</h1>
           <h3>your dashboard overview</h3>
         </div>
         <div className=" flex items-center justify-between h-[50%] w-full mt-10">
           <div className=" border rounded  bg-gray-500 h-[80%] w-[40%] ml-17 flex flex-col items-start pl-8 ">
             <h1 className="pt-5 text-2xl font-semibold">Profile</h1>
-            <h3 className="text-sm mt-2">Name: Barbar</h3>
-            <h3 className="text-sm">Email: barbar@example.com</h3>
-            <h3 className="text-sm">Specialization: Haircut, kids-Special, Hair-Color</h3>
-            <h3 className="text-sm">Location: Hatgacha</h3>
+            <h3 className="text-sm mt-2">Name: {barbar?.name}</h3>
+            <h3 className="text-sm">Email: {barbar?.email}</h3>
+            <h3 className="text-sm">Specialization: {barbar?.specialization}</h3>
+            <h3 className="text-sm">Location: {barbar?.location.street}, {barbar?.location.area}, {barbar?.location.city}, {barbar?.location.pincode}  </h3>
           </div>
           <div className="border rounded bg-gray-500 h-[80%] w-[40%] mr-17 flex flex-col items-start pl-8">
             <h1 className="pt-3 text-2xl font-semibold">Today's Booking</h1>

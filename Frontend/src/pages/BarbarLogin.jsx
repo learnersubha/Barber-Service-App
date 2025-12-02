@@ -20,6 +20,7 @@ const Login = () => {
 
     const barbarLoginResponse = await axios.post("http://localhost:3000/api/auth/barbar/login", barbarLogin, {withCredentials: true})
     console.log(barbarLoginResponse.data);
+    
 
     navigate("/barbar/dashboard")
   };
